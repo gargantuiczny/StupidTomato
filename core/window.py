@@ -36,7 +36,6 @@ class Window(QWidget):
 
         self.break_button = QPushButton(BREAK_BUTTON_TEXT, self)
         self.break_button.clicked.connect(self.start_break)
-        self.break_button.hide()
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.tomato_bar)
@@ -72,8 +71,18 @@ class Window(QWidget):
         except IOError: # Nie chcę, aby brak pliku wywoływał panikę.
             pass
 
-    def start_tomato(self):
+    def show_buttons(self):
+        self.tomato_button.show()
+        self.break_button.show()
+
+    def hide_buttons(self):
         self.tomato_button.hide()
+        self.break_button.hide()
+
+    def start_tomato(self):
+        self.hide_buttons()
+        self.tomato_bar.show()
+        self.break_bar.hide()
         self.tomato_timer.start(ONE_SECOND)
 
     def finish_tomato(self):
@@ -81,12 +90,14 @@ class Window(QWidget):
         self.tomato_bar.reset()
         self.tomato_bar.hide()
         self.break_bar.show()
-        self.break_button.show()
+        self.show_buttons()
         self.player.play()
         self.tray.showMessage(TRAY_MESSAGE_TITLE, TRAY_FINISH_TOMATO_MESSAGE)
 
     def start_break(self):
-        self.break_button.hide()
+        self.hide_buttons()
+        self.tomato_bar.hide()
+        self.break_bar.show()
         self.break_timer.start(ONE_SECOND)
 
     def finish_break(self):
@@ -94,7 +105,7 @@ class Window(QWidget):
         self.break_bar.reset()
         self.break_bar.hide()
         self.tomato_bar.show()
-        self.tomato_button.show()
+        self.show_buttons()
         self.player.play()
         self.tray.showMessage(TRAY_MESSAGE_TITLE, TRAY_FINISH_BREAK_MESSAGE)
 
